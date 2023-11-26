@@ -1,15 +1,25 @@
-var http=require('http');
-var url=require('url');
+var app = require('http').createServer(createServer);
+var fs = require('fs'); 
+var url = require('url');
 
-var server=http.createServer(function(req,res){
-    var pathname=url.parse(req.url).pathname;
-    switch(pathname){
-        case '/subpage':
-            res.end('subpage');
-        break;
-        default:
-            res.end('default');
-        break;
+function createServer(req, res) {
+    var path = url.parse(req.url).pathname;
+    var fsCallback = function(error, data) {
+        if(error) throw error;
+
+        res.writeHead(200);
+        res.write(data);
+        res.end();
     }
 
-}).listen(8080);
+    switch(path) {
+        case '/api':
+            doc = fs.readFile(__dirname + '/index.html', fsCallback);
+        break;
+        default:
+            doc = fs.readFile(__dirname + '/index.html', fsCallback);
+        break;
+    }
+}
+
+app.listen(8080);
